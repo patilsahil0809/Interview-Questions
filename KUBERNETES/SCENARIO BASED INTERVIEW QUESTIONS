@@ -1,0 +1,83 @@
+1. Scenario: You are deploying a new application to Kubernetes and need to decide how to expose the service externally. What type of service should you use to expose the application to the internet?
+Use a LoadBalancer service if running in a cloud environment that supports it (e.g., AWS, GCP).
+Use an Ingress resource combined with an Ingress Controller (e.g., NGINX) for more control over routing and load balancing.
+For simple, internal communication between services, use a ClusterIP service.
+In development or testing environments, a NodePort service can be used, but it's not recommended for production.
+
+2. Scenario: Your application is experiencing high traffic, and some pods are crashing due to resource exhaustion. How can you ensure that pods scale automatically based on CPU usage?
+Set up Horizontal Pod Autoscaling (HPA) by defining a kubectl autoscale command or autoscaling/v1 in the YAML manifest.
+Configure HPA to increase or decrease the number of pods based on CPU utilization (e.g., targetCPUUtilizationPercentage: 80).
+Ensure resource requests and limits are set for containers so that autoscaler can make scaling decisions effectively.
+Use metrics like Kubernetes Metrics Server or Prometheus to track resource usage.
+
+3. Scenario: You are deploying a multi-container pod that needs to share data between containers. How would you share persistent data between these containers?
+Use a Shared Volume in the pod specification, and mount it into multiple containers within the same pod.
+Define the volume in the pod’s spec and specify the volumeMounts for each container needing access.
+Ensure containers have proper read/write permissions to avoid data access conflicts.
+For persistent storage, consider using a PersistentVolume backed by external storage solutions like AWS EBS or NFS.
+
+4. Scenario: You want to restrict certain pods from consuming too many resources in your cluster. How would you enforce resource limits at the namespace level?
+Implement ResourceQuotas in the namespace to limit the total CPU, memory, and storage resources a namespace can consume.
+Define LimitRange objects within the namespace to set default resource requests and limits for individual pods and containers.
+Set a hard limit for CPU/memory to cap resources and a soft request for minimum guaranteed resources.
+Monitor namespaces using tools like Prometheus or Kubecost to track resource consumption trends.
+
+5. Scenario: You’ve deployed an application, but it's failing due to a missing configuration file. How can you inject configuration settings into your Kubernetes pods?
+Use ConfigMaps to inject non-sensitive configuration data such as environment variables, command-line arguments, or config files.
+Mount the ConfigMap as a volume in the pod to make the configuration available as files.
+Reference the ConfigMap in the pod’s environment variables section to use key-value pairs directly.
+For sensitive data like passwords or API keys, use Secrets instead of ConfigMaps.
+
+6. Scenario: Your cluster has multiple nodes, but you want a specific pod to always run on a certain node due to hardware requirements. How can you ensure this?
+Use nodeSelector in the pod spec to schedule the pod on nodes that match specific labels (e.g., high-memory nodes).
+For more complex scheduling, use node affinity (preferred or required) to define soft and hard constraints on where a pod can run.
+Label the node with appropriate labels, such as gpu=true or zone=us-east, and reference them in the pod spec.
+Use taints and tolerations if you want to repel certain pods from a node, but still allow specific pods to be scheduled.
+
+7. Scenario: After deploying a new version of your application, users are experiencing downtime during the update. How would you ensure zero downtime during future updates?
+Use Rolling Updates to gradually replace old pods with new ones by setting strategy: RollingUpdate in the deployment spec.
+Set maxUnavailable and maxSurge values to control how many pods are allowed to be unavailable and how many can be created above the desired count during the update.
+For more controlled updates, use Canary Deployments where a small subset of users sees the new version before a full rollout.
+Roll back quickly with kubectl rollout undo if issues are detected in the new version.
+
+8. Scenario: Your application requires access to a database, but the database credentials must be securely passed to the application pods. How would you handle this?
+Use Kubernetes Secrets to store sensitive information like database credentials.
+Mount the secret as a volume or pass it as environment variables in the pod definition.
+Ensure that only the pods requiring access to the credentials have permissions to the secret using RBAC (Role-Based Access Control).
+Use KMS (Key Management Service) for encrypting secrets at rest, ensuring further security in case of a compromised cluster.
+
+9. Scenario: You’re tasked with creating a new Kubernetes cluster, but your team is unsure how to handle external DNS routing. How would you expose services using a custom domain?
+Use an Ingress Controller (e.g., NGINX) and set up an Ingress resource to handle external HTTP/HTTPS traffic.
+Configure DNS records in your domain’s DNS provider to point to the cluster’s external IP or the Load Balancer IP.
+Use Cert-Manager to automatically provision SSL certificates for HTTPS traffic with Let’s Encrypt.
+Ensure that the Ingress Controller is appropriately configured to route traffic to the correct service.
+
+10. Scenario: Your team is experiencing issues with a pod that frequently crashes. You suspect it’s due to a misconfiguration. How would you troubleshoot this?
+Check the logs of the failing pod using kubectl logs <pod-name> to identify the error.
+Use kubectl describe pod <pod-name> to get detailed information on pod events, such as resource limitations or network issues.
+Run kubectl exec -it <pod-name> -- /bin/bash to open a shell inside the running container and investigate the environment.
+Investigate the health check configuration in the pod’s spec (livenessProbe and readinessProbe).
+
+11. Scenario: You need to ensure that your pod can only be scheduled on nodes that have certain resource constraints. How would you achieve this?
+Use nodeSelector to match the pod to nodes with specific labels (e.g., high-memory or GPU-enabled nodes).
+Alternatively, use node affinity/anti-affinity to express more flexible scheduling rules, such as preferred nodes or required nodes.
+Use taints and tolerations to ensure that only specific workloads are allowed to be scheduled on nodes with special configurations.
+Label the nodes with custom attributes like gpu: true, and ensure the pods refer to these labels.
+
+12. Scenario: One of your team members accidentally deleted a production deployment, causing downtime. How can you prevent accidental deletion of critical resources?
+Use Kubernetes Resource Quotas and Pod Security Policies to limit what users can delete in critical namespaces.
+Implement Role-Based Access Control (RBAC) to restrict who has the permission to delete resources in production environments.
+Mark critical deployments with the kubectl annotate command and use the finalizers field to ensure critical resources are protected from deletion until dependencies are cleaned up.
+Consider implementing an Admission Controller to prevent accidental actions based on predefined policies.
+
+13. Scenario: You want to ensure your pods are always ready before they start receiving traffic. How can you configure Kubernetes to handle this?
+Implement a readinessProbe in the pod specification to check if the application is ready to handle requests.
+A readiness probe can be a simple HTTP request, a command, or a TCP check, depending on the nature of the application.
+Kubernetes will only send traffic to a pod if the readiness probe passes, ensuring the application is fully initialized.
+Additionally, use livenessProbes to ensure that unhealthy pods are restarted automatically if they fail.
+
+14. Scenario: You need to perform maintenance on a node without causing downtime for applications running on it. How would you safely drain the node?
+Use kubectl drain <node-name> to gracefully evict all running pods on the node and reschedule them on other nodes.
+Ensure that PodDisruptionBudgets (PDB) are set for critical services, limiting how many pods can be evicted at the same time.
+Mark the node as unschedulable using kubectl cordon <node-name> before draining it to prevent new pods from being scheduled there.
+After maintenance, use kubectl uncordon <node-name> to allow the node to schedule pods again.
