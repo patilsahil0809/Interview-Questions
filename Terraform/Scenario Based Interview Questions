@@ -1,0 +1,107 @@
+1. Scenario: You need to provision a new AWS EC2 instance using Terraform. What steps would you take to accomplish this?
+Answer:
+
+Create a Terraform configuration file that defines the AWS provider and the EC2 instance resource.
+Ensure to specify the AMI and instance type.
+Initialize Terraform to prepare your working directory.
+Plan the deployment to preview the changes that will be made.
+Apply the configuration to create the EC2 instance.
+Verify the deployment by checking the AWS Management Console.
+
+2. Scenario: Your team is managing multiple environments (development, staging, production) using Terraform. How can you manage configurations for these environments effectively?
+Answer:
+
+Use Terraform workspaces to create isolated environments for each stage (development, staging, production).
+Create separate variable files for each environment to manage configurations.
+Incorporate conditional logic in your configuration files to differentiate resources based on the environment.
+Implement a naming convention for resources that reflects the environment to avoid confusion.
+
+3. Scenario: You want to avoid hardcoding sensitive information, such as AWS credentials, in your Terraform configuration. What strategies would you use?
+Answer:
+
+Set AWS credentials using environment variables to keep them out of your configuration files.
+Use Terraform variable files to define sensitive values and mark them as sensitive to prevent them from being displayed in logs.
+Consider integrating with a secrets management tool (e.g., HashiCorp Vault) to dynamically retrieve sensitive information.
+
+4. Scenario: You need to ensure that your infrastructure remains consistent and that changes are version-controlled. How would you implement this with Terraform?
+Answer:
+
+Store your Terraform configuration files in a version control system (like Git) to track changes over time.
+Use a remote backend (such as S3 or Terraform Cloud) to manage the Terraform state file, ensuring it’s not stored locally.
+Implement CI/CD pipelines to automate the terraform plan and terraform apply processes, ensuring changes are reviewed and tested before deployment.
+
+5. Scenario: You’ve applied changes to your infrastructure, but now you want to revert to the previous state. How can you achieve this with Terraform?
+Answer:
+
+Use a previously saved state file to revert your infrastructure to an earlier configuration by reapplying that state.
+If resource configurations have changed, you can update the configuration file and reapply it.
+Mark resources for recreation if needed, ensuring the infrastructure reflects the desired state.
+
+6. Scenario: Your organization is looking to implement infrastructure as code (IaC) best practices with Terraform. What recommendations would you make?
+Answer:
+
+Break down configurations into reusable modules to encapsulate and share infrastructure components.
+Use consistent naming conventions for resources to improve readability and maintainability.
+Pin provider versions in the required_providers block to avoid unexpected changes.
+Document modules and their inputs/outputs to facilitate team understanding and usage.
+
+7. Scenario: You need to provision an S3 bucket with versioning enabled using Terraform. How would you accomplish this?
+Answer:
+
+Define an S3 bucket resource in your Terraform configuration and specify the desired properties, including enabling versioning.
+Plan and apply the configuration to create the S3 bucket while ensuring it meets your organization's policies for resource naming and tagging.
+
+8. Scenario: You want to manage multiple versions of your infrastructure. How can you use Terraform to handle versioning effectively?
+Answer:
+
+Use Git to track changes in your Terraform configuration files, allowing you to manage different versions effectively.
+Utilize tags in Git to mark specific versions of your infrastructure that correspond to deployed states.
+Manage state files with versioning in a remote backend to ensure consistency across different environments.
+
+9. Scenario: You need to create a security group in AWS that only allows SSH access from a specific IP address. How can you implement this with Terraform?
+Answer:
+
+Define an AWS security group resource in your configuration.
+Specify the ingress rule that allows SSH access from the designated IP address while ensuring compliance with security best practices regarding egress rules.
+
+10. Scenario: You want to create a Lambda function in AWS using Terraform. What are the key components you need to define in your Terraform configuration?
+Answer:
+
+Define the AWS provider in your configuration.
+Create an IAM role that the Lambda function can assume, with a policy allowing the necessary permissions.
+Specify the Lambda function resource with relevant properties such as handler, runtime, and source code location.
+Optionally, define triggers to initiate the Lambda function, such as API Gateway or S3 events.
+
+11. Scenario: Your organization has a policy of using only specific regions for resource deployment. How can you enforce this using Terraform?
+Answer:
+
+Define a variable for the region and set allowed values to enforce compliance.
+Use validation rules within your variable definitions to ensure only permitted regions are specified.
+
+12. Scenario: You need to implement a CI/CD pipeline that includes Terraform for infrastructure deployment. What steps would you take to set this up?
+Answer:
+
+Store your Terraform configurations in a Git repository to facilitate collaboration.
+Integrate CI/CD tools to automate the deployment process by triggering infrastructure changes based on code commits.
+Ensure the pipeline includes steps to plan and apply Terraform changes, with manual approvals for critical deployments.
+
+13. Scenario: You have existing resources managed outside of Terraform, and you want to import them into Terraform management. What is the process for doing this?
+Answer:
+
+Create the appropriate resource configurations in Terraform that match the existing resources.
+Use the Terraform import feature to bring those resources into Terraform's state management.
+Run a plan to ensure that the configurations and the current state are aligned.
+
+14. Scenario: You need to manage secrets and sensitive data in your Terraform configurations securely. What strategies would you use?
+Answer:
+
+Use sensitive variables to ensure that sensitive information is not logged or displayed in output.
+Store secrets in encrypted storage solutions and retrieve them dynamically using appropriate Terraform providers.
+Consider using workspaces to manage sensitive information across different environments without hardcoding values.
+
+15. Scenario: You want to implement a modular approach for your Terraform configurations. How can you achieve this?
+Answer:
+
+Create separate directories for each resource type and define them as modules.
+Use module blocks in your root configuration to reference these modules.
+Define input variables for your modules to parameterize configurations, making them reusable across different deployments.
